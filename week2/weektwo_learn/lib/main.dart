@@ -60,34 +60,7 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   void _pushSaved() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          final Iterable<ListTile> tiles = _saved.map((WordPair pair) {
-            return ListTile(
-              title: Text(
-                pair.asPascalCase,
-                style: _biggerFont
-              ),
-            );
-          });
-          final List<Widget> divided = ListTile
-            .divideTiles(
-              context: context,
-              tiles: tiles
-            ).toList();
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Saved Suggestions'),
-              elevation: 0.0,
-            ),
-            body: ListView(
-              children: divided,
-            ),
-          );
-        }
-      )
-    );
+    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => SavedPage(_saved)));
   }
 
   @override
@@ -108,4 +81,43 @@ class _RandomWordsState extends State<RandomWords> {
 class RandomWords extends StatefulWidget {
   @override
   _RandomWordsState createState() => _RandomWordsState();
+}
+
+class SavedPage extends StatelessWidget {
+  final TextStyle _biggerFont = TextStyle(fontSize: 18.0);
+  final Set<WordPair> saved;
+
+  SavedPage(this.saved);
+
+  List<Widget> _savedList(BuildContext context) {
+    final Iterable<ListTile> tiles = saved.map((WordPair pair) {
+      return ListTile(
+        title: Text(
+          pair.asPascalCase,
+          style: _biggerFont
+        ),
+      );
+    });
+
+    final List<Widget> _divided = ListTile
+      .divideTiles(
+        context: context,
+        tiles: tiles
+      ).toList();
+
+    return _divided;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Saved Suggestions'),
+        elevation: 0.0,
+      ),
+      body: ListView(
+        children: _savedList(context),
+      ),
+    );
+  }
 }
