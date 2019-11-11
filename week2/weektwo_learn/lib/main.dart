@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Random Words',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primaryColor: Colors.white,
       ),
       home: RandomWords(),
     );
