@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
+    _controller = AnimationController(vsync: this, duration: Duration(seconds: 3));
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn)
       ..addStatusListener((status) {
         if(status == AnimationStatus.completed) {
@@ -43,15 +43,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         }
       })
       ..addStatusListener((state) => print('$state'));
-/*    _animation = Tween<double>(begin: 0, end: 300).animate(_controller)
-      ..addStatusListener((status) {
-        if(status == AnimationStatus.completed) {
-          _controller.reverse();
-        } else if(status == AnimationStatus.dismissed) {
-          _controller.forward();
-        }
-      })
-      ..addStatusListener((state) => print('$state'));*/
 
     _controller.forward();
   }
