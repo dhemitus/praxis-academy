@@ -34,8 +34,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
-
-    _animation = Tween<double>(begin: 0, end: 300).animate(_controller)
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn)
       ..addStatusListener((status) {
         if(status == AnimationStatus.completed) {
           _controller.reverse();
@@ -44,6 +43,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         }
       })
       ..addStatusListener((state) => print('$state'));
+/*    _animation = Tween<double>(begin: 0, end: 300).animate(_controller)
+      ..addStatusListener((status) {
+        if(status == AnimationStatus.completed) {
+          _controller.reverse();
+        } else if(status == AnimationStatus.dismissed) {
+          _controller.forward();
+        }
+      })
+      ..addStatusListener((state) => print('$state'));*/
 
     _controller.forward();
   }
@@ -61,6 +69,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 class GrowTransition extends StatelessWidget {
   final Animation<double> animation;
   final Widget child;
+  static final _opacityTween = Tween<double>(begin: 0.1, end: 1.0);
+  static final _sizeTween = Tween<double>(begin: 0, end: 300);
 
   GrowTransition({this.animation, this.child});
 
@@ -70,9 +80,12 @@ class GrowTransition extends StatelessWidget {
       child: AnimatedBuilder(
         animation: animation,
         builder: (BuildContext context, child) => Container(
-          height: animation.value,
-          width: animation.value,
-          child: child,
+          height: _sizeTween.evaluate(animation),
+          width: _sizeTween.evaluate(animation),
+          child: Opacity(
+            opacity: _opacityTween.evaluate(animation),
+            child: child
+          ),
         ),
         child: child,
       ),      
