@@ -8,6 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -26,35 +27,67 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  Animation<double> animation;
-  AnimationController controller;
+  Animation<double> _animation;
+  AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
+    _controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
 
-    animation = Tween<double>(begin: 0, end: 300).animate(controller)
+    _animation = Tween<double>(begin: 0, end: 300).animate(_controller)
       ..addStatusListener((status) {
         if(status == AnimationStatus.completed) {
-          controller.reverse();
+          _controller.reverse();
         } else if(status == AnimationStatus.dismissed) {
-          controller.forward();
+          _controller.forward();
         }
       })
       ..addStatusListener((state) => print('$state'));
 
-    controller.forward();
+    _controller.forward();
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => AnimatedLogo(animation: animation,);
+  Widget build(BuildContext context) => GrowTransition(animation: _animation, child: LogoWidget(),);
+}
+
+class GrowTransition extends StatelessWidget {
+  final Animation<double> animation;
+  final Widget child;
+
+  GrowTransition({this.animation, this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: AnimatedBuilder(
+        animation: animation,
+        builder: (BuildContext context, child) => Container(
+          height: animation.value,
+          width: animation.value,
+          child: child,
+        ),
+        child: child,
+      ),      
+    );
+  }
+}
+
+class LogoWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: FlutterLogo(),
+    );
+  }
 }
 
 class AnimatedLogo extends AnimatedWidget {
